@@ -1,28 +1,34 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <v-app>
+        <app-header />
+
+        <v-content>
+            <router-view />
+        </v-content>
+
+        <feedback />
+    </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+    import apiConfig from './components/api/apiConfig';
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+    import AppHeader from './components/header/AppHeader.vue';
+    import Feedback from './components/feedback/Feedback.vue';
+
+    export default {
+        name: 'App',
+        components: { AppHeader, Feedback },
+        mixins: [apiConfig],
+        created() {
+            this.createInterceptors();
+
+            if (window.localStorage.authToken && window.localStorage.userId) {
+                this.$store.commit('setAuthToken', window.localStorage.authToken);
+                this.$store.commit('setUserId', window.localStorage.userId);
+            } else {
+                this.$router.push('/');
+            }
+        },
+    };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
